@@ -1,1 +1,59 @@
 # new-task-11-47
+CREATE DATABASE LibraryDB
+USE LibraryDB
+
+CREATE TABLE Authors
+(
+Id INT PRIMARY KEY,
+FullName NVARCHAR(20) NOT NULL,
+BirthYear INT
+);
+
+CREATE TABLE Customers
+(
+Id INT PRIMARY KEY,
+FullName NVARCHAR(20) NOT NULL,
+Email NVARCHAR(50) NOT NULL UNIQUE,
+Phone NVARCHAR(50),
+DateJoined DATE DEFAULT GETDATE() 
+);
+CREATE TABLE Books
+(
+Id INT PRIMARY KEY IDENTITY(1,1),
+Title NVARCHAR(20) NOT NULL,
+AuthorId INT NOT NULL,
+PublishedYear INT NOT NULL,
+Category NVARCHAR(100),
+Price DECIMAL (10,2) NOT NULL,
+
+FOREIGN KEY (AuthorId) REFERENCES Authors(Id),
+CONSTRAINT chk_PublishedYear CHECK (PublishedYear >=1900),
+CONSTRAINT chk_Price CHECK(Price>=0),
+
+);
+CREATE TABLE Orders
+(
+Id INT PRIMARY KEY IDENTITY (1,1),
+CustomerId INT NOT NULL,
+OrderDate DATE NOT NULL,
+TotalPrice DECIMAL (10,2) NOT NULL,
+
+FOREIGN KEY (CustomerId) REFERENCES Customers(Id),
+
+CONSTRAINT chk_TotalPrice CHECK (TotalPrice >=0)
+);
+
+CREATE TABLE OtherDetails
+(
+ID INT PRIMARY KEY IDENTITY(1,1),
+OrderId INT NOT NULL,
+BookId INT NOT NULL,
+Quantity INT NOT NULL,
+Price DECIMAL (10,2) NOT NULL,
+
+FOREIGN KEY (OrderId) REFERENCES Orders(Id),
+FOREIGN KEY (BookId) REFERENCES Books(Id),
+CONSTRAINT chk_Quantity CHECK(Quantity >0),
+CONSTRAINT chk_DetailPrice CHECK (Price >=0),
+);
+
